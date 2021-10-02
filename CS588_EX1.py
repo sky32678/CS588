@@ -13,6 +13,22 @@ def left_light(pacmod_msg):
     pacmod_msg.TURN_LEFT = 2
     pub.publish(pacmod_msgs)
 
+def main(pacmod_msg):
+
+    left_light(pacmod_msg)
+    rospy.sleep(sleep_time)
+    stop_light(pacmod_msg)
+
+    right_light(pacmod_msg)
+    rospy.sleep(sleep_time)
+    stop_light(pacmod_msg)
+
+    left_light(pacmod_msg)
+    rospy.sleep(sleep_time)
+    stop_light(pacmod_msg)
+
+    rospy.sleep(sleep_time)
+
 if __name__ == "__main__":
     rospy.init_node('Polaris GEM 2 Ex')
     pub = rospy.Publisher("/pacmod/as_rx/turn_cmd", PacmodCmd, queue_size = 10)
@@ -22,17 +38,4 @@ if __name__ == "__main__":
             pass
 
         pacmod_msg = PacmodCmd()
-
-        left_light(pacmod_msg)
-        rospy.sleep(sleep_time)
-        stop_light(pacmod_msg)
-
-        right_light(pacmod_msg)
-        rospy.sleep(sleep_time)
-        stop_light(pacmod_msg)
-
-        left_light(pacmod_msg)
-        rospy.sleep(sleep_time)
-        stop_light(pacmod_msg)
-
-        rospy.sleep(sleep_time)
+        main(pacmod_msg)
