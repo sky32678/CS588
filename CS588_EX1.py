@@ -1,27 +1,43 @@
 import rospy
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
+from pacmod_msgs.msg import PacmodCmd
 
-def stop_ligt():
+def stop_light():
+    pacmod_msg = PacmodCmd()
+    pacmod_msg.TURN_NONE = 1
+    pub.publish(pacmod_msgs)
     return
 
 def right_light():
+    pacmod_msg = PacmodCmd()
+    pacmod_msg.TURN_RIGHT = 0
+    pub.publish(pacmod_msgs)
     return
 
 def left_light():
+    pacmod_msg = PacmodCmd()
+    pacmod_msg.TURN_LEFT = 2
+    pub.publish(pacmod_msgs)
     return
 
 if __name__ == "__main__":
     rospy.init_node('check_odometry')
-    # sub = rospy.Subscriber("/odometry/filtered", Odometry, callback)
-    pub = rospy.Publisher("/cmd_vel",Twist,queue_size =10)
+    pub = rospy.Publisher("/pacmod/as_rx/turn_cmd", PacmodCmd, queue_size = 10)
     while not rospy.is_shutdown():
         while not pub.get_num_connections() == 1:
             pass
 
-        twist_msg = Twist()
-        twist_msg.linear.x = linear_velocity
-        twist_msg.angular.z = control_law
+        left_light()
+        rospy.sleep(3)
+        stop_light()
 
-        pub.publish(twist_msg)
-        rospy.sleep(0.001)
+        right_light()
+        rospy.sleep(3)
+        stop_light()
+
+        left_light()
+        rospy.sleep(3)
+        stop_light()
+
+        rospy.sleep(3)
