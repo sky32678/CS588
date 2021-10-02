@@ -14,6 +14,7 @@ def left_light(pacmod_msg):
     pub.publish(pacmod_msgs)
 
 def main(pacmod_msg):
+    sleep_time = 3
 
     left_light(pacmod_msg)
     rospy.sleep(sleep_time)
@@ -32,7 +33,6 @@ def main(pacmod_msg):
 if __name__ == "__main__":
     rospy.init_node('Polaris GEM 2 Ex')
     pub = rospy.Publisher("/pacmod/as_rx/turn_cmd", PacmodCmd, queue_size = 10)
-    sleep_time = 3
     while not rospy.is_shutdown():
         while not pub.get_num_connections() == 1:
             pass
