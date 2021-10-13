@@ -132,7 +132,19 @@ class WaypointPIDControl(object):
                     break
 
             # TODO: transforming the goal point into the vehicle coordinate frame
+            T = np.array([
+                [1, 0, cur_x,
+                [0, 1, cur_y,
+                [0, 0, 1],
+            ])
 
+            R = np.array([
+                [np.cos(cur_yaw), -np.sin(cur_yaw), 0],
+                [np.sin(cur_yaw), np.cos(cur_yaw), 0],
+                [0, 0, 1],
+            ])
+
+            t_M = T @ R
             # TODO: define your feedback value
             # set_point - angle (self.last_err)
             cur_feedback_val = self.set_point - self.output
