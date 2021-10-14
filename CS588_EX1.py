@@ -1,35 +1,38 @@
 import rospy
 from pacmod_msgs.msg import PacmodCmd
 
-def stop_light():
+def stop_light(pub):
     pacmod_msg = PacmodCmd()
     pacmod_msg.TURN_NONE = 1
+    # pacmod_msg.ui16_cmd = 1
     pub.publish(pacmod_msgs)
 
-def right_light():
+def right_light(pub):
     pacmod_msg = PacmodCmd()
     pacmod_msg.TURN_RIGHT = 0
+    # pacmod_msg.ui16_cmd = 0
     pub.publish(pacmod_msgs)
 
-def left_light():
+def left_light(pub):
     pacmod_msg = PacmodCmd()
     pacmod_msg.TURN_LEFT = 2
+    # pacmod_msg.ui16_cmd = 2
     pub.publish(pacmod_msgs)
 
-def main():
+def main(pub):
     sleep_time = 3
 
-    left_light()
+    left_light(pub)
     rospy.sleep(sleep_time)
-    stop_light()
+    stop_light(pub)
 
-    right_light()
+    right_light(pub)
     rospy.sleep(sleep_time)
-    stop_light()
+    stop_light(pub)
 
-    left_light()
+    left_light(pub)
     rospy.sleep(sleep_time)
-    stop_light()
+    stop_light(pub)
 
     rospy.sleep(sleep_time)
 
@@ -40,4 +43,4 @@ if __name__ == "__main__":
         while not pub.get_num_connections() == 1:
             pass
 
-        main()
+        main(pub)
