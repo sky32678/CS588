@@ -2,16 +2,9 @@ import rospy
 from pacmod_msgs.msg import PacmodCmd
 import torch
 
-
-def brake(pub):
-    pacmod_msg = PacmodCmd()
-    pacmod_msg.f64_cmd = 1.0
-    pub.publish(pacmod_msgs)
-
 def callback(msg):
     global cam_image
     cam_image = msg
-
 
 def main():
     global cam_image
@@ -34,11 +27,6 @@ def main():
             brake(pub)
             count += 1
             print(count)
-            # while (0.0 in temp):
-            #     print("PERSON DETECTED")
-            #     brake(pub)
-            #     count += 1
-            #     print(count)
 
 if __name__ == "__main__":
     main()
