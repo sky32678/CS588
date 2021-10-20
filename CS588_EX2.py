@@ -5,7 +5,18 @@ import torch
 
 def brake(pub):
     pacmod_msg = PacmodCmd()
+    pacmod_msg.enable = True
+    pacmod_msg.clear = False
+    pacmod_msg.ignore = False
     pacmod_msg.f64_cmd = 1.0
+    pub.publish(pacmod_msgs)
+
+def unbrake(pub):
+    pacmod_msg = PacmodCmd()
+    pacmod_msg.enable = True
+    pacmod_msg.clear = False
+    pacmod_msg.ignore = False
+    pacmod_msg.f64_cmd = 0.0
     pub.publish(pacmod_msgs)
 
 def callback(msg):
@@ -39,6 +50,9 @@ def main():
             #     brake(pub)
             #     count += 1
             #     print(count)
+        else:
+            unbrake(pub)
+            print("NO Brake")
 
 if __name__ == "__main__":
     main()
