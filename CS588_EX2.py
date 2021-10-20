@@ -9,7 +9,7 @@ def brake(pub):
     pacmod_msg.clear = False
     pacmod_msg.ignore = False
     pacmod_msg.f64_cmd = 1.0
-    pub.publish(pacmod_msgs)
+    pub.publish(pacmod_msg)
 
 def unbrake(pub):
     pacmod_msg = PacmodCmd()
@@ -17,7 +17,7 @@ def unbrake(pub):
     pacmod_msg.clear = False
     pacmod_msg.ignore = False
     pacmod_msg.f64_cmd = 0.0
-    pub.publish(pacmod_msgs)
+    pub.publish(pacmod_msg)
 
 def callback(msg):
     global cam_image

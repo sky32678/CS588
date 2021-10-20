@@ -3,20 +3,20 @@ from pacmod_msgs.msg import PacmodCmd
 
 def stop_light(pub):
     pacmod_msg = PacmodCmd()
-    pacmod_msg.TURN_NONE = 1
-    # pacmod_msg.ui16_cmd = 1
+    # pacmod_msg.TURN_NONE = 1
+    pacmod_msg.ui16_cmd = 1
     pub.publish(pacmod_msg)
 
 def right_light(pub):
     pacmod_msg = PacmodCmd()
-    pacmod_msg.TURN_RIGHT = 0
-    # pacmod_msg.ui16_cmd = 0
+    # pacmod_msg.TURN_RIGHT = 0
+    pacmod_msg.ui16_cmd = 0
     pub.publish(pacmod_msg)
 
 def left_light(pub):
     pacmod_msg = PacmodCmd()
-    pacmod_msg.TURN_LEFT = 2
-    # pacmod_msg.ui16_cmd = 2
+    # pacmod_msg.TURN_LEFT = 2
+    pacmod_msg.ui16_cmd = 2
     pub.publish(pacmod_msg)
 
 def main(pub):
