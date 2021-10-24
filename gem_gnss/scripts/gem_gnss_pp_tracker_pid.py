@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 
 #================================================================
-# File name: gem_gnss_pp_tracker_pid.py                                                                  
-# Description: gnss waypoints tracker using pid and pure pursuit                                                                
+# File name: gem_gnss_pp_tracker_pid.py
+# Description: gnss waypoints tracker using pid and pure pursuit
 # Author: Hang Cui
-# Email: hangcui3@illinois.edu                                                                     
-# Date created: 08/02/2021                                                                
-# Date last modified: 08/13/2021                                                          
-# Version: 0.1                                                                    
-# Usage: rosrun gem_gnss gem_gnss_pp_tracker.py                                                                      
-# Python version: 3.8                                                             
+# Email: hangcui3@illinois.edu
+# Date created: 08/02/2021
+# Date last modified: 08/13/2021
+# Version: 0.1
+# Usage: rosrun gem_gnss gem_gnss_pp_tracker.py
+# Python version: 3.8
 #================================================================
 
 from __future__ import print_function
 
 # Python Headers
-import os 
+import os
 import csv
 import math
 import numpy as np
@@ -82,23 +82,23 @@ class PID(object):
 class OnlineFilter(object):
 
     def __init__(self, cutoff, fs, order):
-        
+
         nyq = 0.5 * fs
         normal_cutoff = cutoff / nyq
 
-        # Get the filter coefficients 
+        # Get the filter coefficients
         self.b, self.a = signal.butter(order, normal_cutoff, btype='low', analog=False)
 
         # Initialize
         self.z = signal.lfilter_zi(self.b, self.a)
-    
+
     def get_data(self, data):
         filted, self.z = signal.lfilter(self.b, self.a, [data], zi=self.z)
         return filted
 
 
 class PurePursuit(object):
-    
+
     def __init__(self):
 
         self.rate       = rospy.Rate(10)
@@ -120,9 +120,9 @@ class PurePursuit(object):
         self.olat       = 40.0928563
         self.olon       = -88.2359994
 
-        # read waypoints into the system 
-        self.goal       = 0            
-        self.read_waypoints() 
+        # read waypoints into the system
+        self.goal       = 0
+        self.read_waypoints()
 
         self.desired_speed = 0.75  # m/s, reference speed
         self.max_accel     = 0.4 # % of acceleration
@@ -220,6 +220,7 @@ class PurePursuit(object):
         # read recorded GPS lat, lon, heading
         dirname  = os.path.dirname(__file__)
         filename = os.path.join(dirname, '../waypoints/xy_demo.csv')
+        # filename = os.path.join(dirname, '../waypoints/xy_demo.csv') ## Change this
 
         with open(filename) as f:
             path_points = [tuple(line) for line in csv.reader(f)]
@@ -234,7 +235,7 @@ class PurePursuit(object):
     def wps_to_local_xy(self, lon_wp, lat_wp):
         # convert GNSS waypoints into local fixed frame reprented in x and y
         lon_wp_x, lat_wp_y = axy.ll2xy(lat_wp, lon_wp, self.olat, self.olon)
-        return lon_wp_x, lat_wp_y   
+        return lon_wp_x, lat_wp_y
 
     def get_gem_state(self):
 
@@ -245,7 +246,7 @@ class PurePursuit(object):
 
         # heading to yaw (degrees to radians)
         # heading is calculated from two GNSS antennas
-        curr_yaw = self.heading_to_yaw(self.heading) 
+        curr_yaw = self.heading_to_yaw(self.heading)
 
         # reference point is located at the center of rear axle
         curr_x = local_x_curr - self.offset * np.cos(curr_yaw)
@@ -253,7 +254,7 @@ class PurePursuit(object):
 
         return round(curr_x, 3), round(curr_y, 3), round(curr_yaw, 4)
 
-    # find the angle bewtween two vectors    
+    # find the angle bewtween two vectors
     def find_angle(self, v1, v2):
         cosang = np.dot(v1, v2)
         sinang = la.norm(np.cross(v1, v2))
@@ -265,7 +266,7 @@ class PurePursuit(object):
         return round(np.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2), 3)
 
     def start_pp(self):
-        
+
         while not rospy.is_shutdown():
 
             if (self.gem_enable == False):
@@ -283,7 +284,7 @@ class PurePursuit(object):
                     self.brake_cmd.ignore  = False
                     self.brake_cmd.f64_cmd = 0.0
 
-                    # enable gas 
+                    # enable gas
                     self.accel_cmd.enable  = True
                     self.accel_cmd.clear   = False
                     self.accel_cmd.ignore  = False
@@ -294,7 +295,7 @@ class PurePursuit(object):
 
                     self.turn_pub.publish(self.turn_cmd)
                     print("Turn Signal Ready!")
-                    
+
                     self.brake_pub.publish(self.brake_cmd)
                     print("Brake Engaged!")
 
@@ -330,12 +331,12 @@ class PurePursuit(object):
             # true look-ahead distance between a waypoint and current position
             L = self.dist_arr[self.goal]
 
-            # find the curvature and the angle 
+            # find the curvature and the angle
             alpha = self.heading_to_yaw(self.path_points_heading[self.goal]) - curr_yaw
 
             # ----------------- tuning this part as needed -----------------
-            k       = 0.41 
-            angle_i = math.atan((k * 2 * self.wheelbase * math.sin(alpha)) / L) 
+            k       = 0.41
+            angle_i = math.atan((k * 2 * self.wheelbase * math.sin(alpha)) / L)
             angle   = angle_i*2
             # ----------------- tuning this part as needed -----------------
 
@@ -401,5 +402,3 @@ def pure_pursuit():
 
 if __name__ == '__main__':
     pure_pursuit()
-
-
