@@ -47,10 +47,10 @@ def unbrake(pub):
     pacmod_msg.ignore = False
     pacmod_msg.f64_cmd = 0.0
     pub.publish(pacmod_msg)
-
-def callback(msg):
-    global cam_image
-    cam_image = msg
+#
+# def callback(msg):
+#     global cam_image
+#     cam_image = msg
 
 
 def main():
