@@ -219,8 +219,8 @@ class PurePursuit(object):
 
         # read recorded GPS lat, lon, heading
         dirname  = os.path.dirname(__file__)
-        filename = os.path.join(dirname, '../waypoints/xy_demo.csv')
-        # filename = os.path.join(dirname, '../waypoints/xy_demo.csv') ## Change this
+        #filename = os.path.join(dirname, '../waypoints/xy_demo.csv')
+        filename = os.path.join(dirname, '../eight.csv') ## Change this
 
         with open(filename) as f:
             path_points = [tuple(line) for line in csv.reader(f)]
@@ -319,13 +319,17 @@ class PurePursuit(object):
 
             # finding the goal point which is the last in the set of points less than the lookahead distance
             for idx in goal_arr:
+            	
                 v1 = [self.path_points_x[idx]-curr_x , self.path_points_y[idx]-curr_y]
                 v2 = [np.cos(curr_yaw), np.sin(curr_yaw)]
                 temp_angle = self.find_angle(v1,v2)
                 # find correct look-ahead point by using heading information
-                if abs(temp_angle) < np.pi/2:
+                if abs(temp_angle) < np.pi/2 and self.goal < idx:
+             #   if abs(temp_angle) < np.pi/2 and abs( self.heading_to_yaw(self.path_points_heading[idx] )- curr_yaw)  < np.pi/180*45:
                     self.goal = idx
                     break
+            print(self.goal)
+            print(curr_x, curr_y)
 
             # finding the distance between the goal point and the vehicle
             # true look-ahead distance between a waypoint and current position
@@ -368,8 +372,8 @@ class PurePursuit(object):
             if output_accel > self.max_accel:
                 output_accel = self.max_accel
 
-            if output_accel < 0.3:
-                output_accel = 0.3
+            if output_accel < 0.1:
+                output_accel = 0.1
 
             if (f_delta_deg <= 30 and f_delta_deg >= -30):
                 self.turn_cmd.ui16_cmd = 1
